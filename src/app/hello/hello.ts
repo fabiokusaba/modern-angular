@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 
 @Component({
   selector: 'app-hello',
@@ -18,16 +18,30 @@ export class Hello {
 
   protected count = signal(0);
 
-  increaseCounter() {
+  // depends on count, when count changes, doubleCount will recalculate, so when we use computed signals we only run
+  // when their dependencies change
+  protected doubleCount = computed(() => {
+    console.log('doubleCount computed signal called');
+    return this.count() * 2;
+  });
+
+  // the problem with this approach is when we reference the method instead of computed signal, the template
+  // is gonna run every time change detection runs and can become expensive logic as grows
+  protected getDoubleCount() {
+    console.log('getDoubleCount called');
+    return this.count() * 2;
+  }
+
+  protected increaseCounter() {
     // count = count + 1
     this.count.update(value => value + 1);
   }
 
-  decreaseCounter() {
+  protected decreaseCounter() {
     this.count.update(value => value - 1);
   }
 
-  resetCounter() {
+  protected resetCounter() {
     this.count.set(0);
   }
 }
