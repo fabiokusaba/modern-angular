@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 
 @Component({
   selector: 'app-hello',
@@ -23,6 +23,11 @@ export class Hello {
   protected doubleCount = computed(() => {
     console.log('doubleCount computed signal called');
     return this.count() * 2;
+  });
+
+  // effect runs a side effect whenever any of the signals it depends on change, do not return values
+  private readonly countLog = effect(() => {
+    console.log('Count changed:', this.count());
   });
 
   // the problem with this approach is when we reference the method instead of computed signal, the template
